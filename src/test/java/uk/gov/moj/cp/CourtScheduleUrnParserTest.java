@@ -1,4 +1,4 @@
-package uk.gov.moj.cp.wiremock;
+package uk.gov.moj.cp;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

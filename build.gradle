@@ -29,8 +29,8 @@ dependencies {
 }
 
 application {
-  mainClass = "uk.gov.moj.cp.wiremock.WiremockServiceApplication"
-  applicationName = "wiremock-service"
+  mainClass = "uk.gov.moj.cp.Application"
+  applicationName = "stg-track-my-case-service-mock"
 }
 
 tasks.withType(Test).configureEach {

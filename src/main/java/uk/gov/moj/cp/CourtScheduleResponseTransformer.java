@@ -1,4 +1,4 @@
-package uk.gov.moj.cp.wiremock;
+package uk.gov.moj.cp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;

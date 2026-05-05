@@ -1,7 +1,8 @@
-package uk.gov.moj.cp.wiremock;
+package uk.gov.moj.cp;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import org.apache.hc.core5.http.ContentType;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -9,9 +10,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathTemplate;
 
-public class WiremockServiceApplication {
-
-    private static final String JSON = "application/json";
+public class Application {
 
     public static void main(String[] args) {
         int port = Integer.parseInt(System.getenv().getOrDefault("WIREMOCK_PORT", "8089"));
@@ -27,7 +26,7 @@ public class WiremockServiceApplication {
         // Client credentials (same host as AMP: override TMC_TOKEN_URL to this WireMock in docker-compose)
         server.stubFor(post(urlPathMatching("/[^/]+/oauth2/v2\\.0/token"))
                            .willReturn(aResponse()
-                                           .withHeader("Content-Type", JSON)
+                                           .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                                            .withStatus(200)
                                            .withBody(
                                                """
@@ -42,7 +41,7 @@ public class WiremockServiceApplication {
 
         server.stubFor(get(urlPathMatching("/courthouses/[^/]+/courtrooms/[^/]+"))
                            .willReturn(aResponse()
-                                           .withHeader("Content-Type", JSON)
+                                           .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                                            .withStatus(200)
                                            .withBody(
                                                """
@@ -65,7 +64,7 @@ public class WiremockServiceApplication {
 
         server.stubFor(get(urlPathMatching("/courthouses/[^/]+"))
                            .willReturn(aResponse()
-                                           .withHeader("Content-Type", JSON)
+                                           .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                                            .withStatus(200)
                                            .withBody(
                                                """
@@ -88,7 +87,7 @@ public class WiremockServiceApplication {
 
         server.stubFor(get(urlPathTemplate("/pcd/cases/{case_urn}"))
                            .willReturn(aResponse()
-                                           .withHeader("Content-Type", JSON)
+                                           .withHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                                            .withStatus(200)
                                            .withBody(
                                                """
@@ -101,7 +100,6 @@ public class WiremockServiceApplication {
                                            .withTransformers(CourtScheduleResponseTransformer.NAME)));
 
         Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
-        System.out.println("WireMock service running on port " + port);
     }
 }
 
