@@ -16,8 +16,12 @@ repositories {
   mavenCentral()
 }
 
+ext {
+  lombokVersion = "1.18.42"
+}
+
 dependencies {
-  implementation "org.wiremock:wiremock:3.13.0"
+  implementation "org.wiremock:wiremock:3.13.2"
   implementation "com.fasterxml.jackson.core:jackson-databind:2.18.4"
   implementation "org.slf4j:slf4j-simple:2.0.17"
 
@@ -26,6 +30,10 @@ dependencies {
   testImplementation("org.junit.jupiter:junit-jupiter-params")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+  compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+
 }
 
 application {
