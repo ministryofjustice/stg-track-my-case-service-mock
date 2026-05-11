@@ -16,11 +16,7 @@ public class Utils {
 
     private static final String MOCK_RESPONSES_DIR = "responses/";
 
-    public static final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-    public static ResponseEntity<String> getResponse(String fileName) {
+    public static ResponseEntity<String> getResponse(final String fileName) {
         ClassPathResource resource = new ClassPathResource(MOCK_RESPONSES_DIR + fileName);
         if (!resource.exists()) {
             throw new IllegalArgumentException("Missing mock JSON: " + fileName);

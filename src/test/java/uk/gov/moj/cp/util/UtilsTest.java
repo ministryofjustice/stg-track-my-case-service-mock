@@ -13,12 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UtilsTest {
 
     @Test
-    void objectMapperIsConfigured() {
-        ObjectMapper om = Utils.objectMapper;
-        assertNotNull(om);
-    }
-
-    @Test
     void getResponseLoadsClasspathMockJson() {
         ResponseEntity<String> response = Utils.getResponse("oauth-token.json");
 
