@@ -1,22 +1,32 @@
 # stg-track-my-case-service-mock
 
-Standalone WireMock server that mocks downstream AMP endpoints for local development of [stg-track-my-case-service](../stg-track-my-case-service).
+Spring Boot mock service for downstream AMP endpoints, used for local development of [stg-track-my-case-service](../stg-track-my-case-service).
 
 ## Run locally
 
 ```bash
-WIREMOCK_PORT=8089 ./gradlew run
+SERVER_PORT=8089 ./gradlew run
 ```
 
 ## Docker
 
-Creates a user-defined network `stg-track-my-case-mock` so the main app’s Docker Compose can resolve the hostname `wiremock-service`.
+Same layout as [stg-track-my-case-service](../stg-track-my-case-service): `Dockerfile`, `docker-compose.yml`, `deploy.sh`, and `.env` / `.env.example`.
 
-Start the mock **before** starting `stg-track-my-case-service` compose:
+Copy `.env.example` to `.env`, then either:
 
 ```bash
-docker compose up -d --build
+./deploy.sh
 ```
+
+or:
+
+```bash
+docker-compose up -d --build
+```
+
+Creates the network `stg-track-my-case-mock` on first run (`MOCK_HOST_PORT` / `SERVER_PORT` behave like the main service’s host vs container port split).
+
+If `./gradlew` inside `docker build` cannot reach `services.gradle.org`, fix Docker DNS/network or try `docker build --network=host .` on Linux (same class of issue as the main service).
 
 ## With stg-track-my-case-service
 

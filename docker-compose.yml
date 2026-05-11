@@ -1,0 +1,47 @@
+services:
+  stg-track-my-case-service-mock:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${https_proxy}
+        no_proxy: ${no_proxy}
+        BASE_IMAGE: ${BASE_IMAGE}
+        SERVER_PORT: ${SERVER_PORT}
+        JAR_FILE_PATH: ${JAR_FILE_PATH}
+    env_file:
+      - .env
+    environment:
+      ROOT_APPENDER: ${ROOT_APPENDER:-}
+      JSON_CONSOLE_PRETTY_PRINT: ${JSON_CONSOLE_PRETTY_PRINT:-}
+      ROOT_LOGGING_LEVEL: ${ROOT_LOGGING_LEVEL:-}
+      REFORM_SERVICE_TYPE: ${REFORM_SERVICE_TYPE:-}
+      REFORM_SERVICE_NAME: ${REFORM_SERVICE_NAME:-}
+      REFORM_TEAM: ${REFORM_TEAM:-}
+      REFORM_ENVIRONMENT: ${REFORM_ENVIRONMENT:-}
+      LOGBACK_DATE_FORMAT: ${LOGBACK_DATE_FORMAT:-}
+      LOGBACK_REQUIRE_THREAD: ${LOGBACK_REQUIRE_THREAD:-}
+      LOGBACK_REQUIRE_ALERT_LEVEL: "false"
+      LOGBACK_REQUIRE_ERROR_CODE: "false"
+      # For IntelliJ Remote JVM Debug, attach to localhost:5005 (same pattern as stg-track-my-case-service).
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    # Right side must be the port the JVM listens on inside the container (see SERVER_PORT in .env), not MOCK_HOST_PORT.
+    ports:
+      - "${MOCK_HOST_PORT:-8089}:${SERVER_PORT}"
+      - "5005:5005"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8089/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      tmc-mock:
+        aliases:
+          - wiremock-service
+
+# Creates network on first up; stg-track-my-case-service joins it as external (same name).
+networks:
+  tmc-mock:
+    name: stg-track-my-case-mock
