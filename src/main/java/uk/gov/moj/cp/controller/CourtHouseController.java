@@ -1,5 +1,6 @@
 package uk.gov.moj.cp.controller;
 
+import com.moj.generated.hmcts.CourtHouse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,16 +18,16 @@ public class CourtHouseController {
 
     @GetMapping("/courthouses/{courthouseId}/courtrooms/{courtroomId}")
     @SuppressWarnings("unused")
-    public ResponseEntity<String> courthouseAndCourtroom(
+    public ResponseEntity<CourtHouse> courthouseAndCourtroom(
             @PathVariable String courthouseId,
             @PathVariable String courtroomId
     ) {
-        return courtHouseService.courthouse();
+        return ResponseEntity.ok(courtHouseService.courthouse(courthouseId, courtroomId));
     }
 
     @GetMapping("/courthouses/{courthouseId}")
     @SuppressWarnings("unused")
-    public ResponseEntity<String> courthouse(@PathVariable String courthouseId) {
-        return courtHouseService.courthouse();
+    public ResponseEntity<CourtHouse> courthouse(@PathVariable String courthouseId) {
+        return ResponseEntity.ok(courtHouseService.courthouse(courthouseId));
     }
 }

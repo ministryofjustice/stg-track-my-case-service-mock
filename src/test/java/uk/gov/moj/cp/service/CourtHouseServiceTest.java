@@ -1,21 +1,27 @@
 package uk.gov.moj.cp.service;
 
+import com.moj.generated.hmcts.CourtHouse;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CourtHouseServiceTest {
 
     private final CourtHouseService courtHouseService = new CourtHouseService();
 
     @Test
-    void courthouseReturnsWestminsterStubJson() {
-        ResponseEntity<String> response = courtHouseService.courthouse();
+    void courthouseByIdUsesDefaultCourtRoom() {
+        CourtHouse courtHouse = courtHouseService.courthouse("B01IX00");
 
-        assertEquals(200, response.getStatusCode().value());
-        assertTrue(response.getBody().contains("Westminster Magistrates"));
-        assertTrue(response.getBody().contains("courtHouseCode"));
+        assertEquals("B01IX00", courtHouse.getCourtHouseCode());
+        assertEquals("Westminster Magistrates' Court", courtHouse.getCourtHouseName());
+        assertEquals(2975, courtHouse.getCourtRoom().getFirst().getCourtRoomId());
+    }
+
+    @Test
+    void courthouseAndCourtroomUsesPathCourtRoomId() {
+        CourtHouse courtHouse = courtHouseService.courthouse("B01IX00", "123");
+
+        assertEquals(123, courtHouse.getCourtRoom().getFirst().getCourtRoomId());
     }
 }
