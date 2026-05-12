@@ -1,32 +1,26 @@
-# Gradle
-.gradle/
-build/
+.gradle
+/build/
 !gradle/wrapper/gradle-wrapper.jar
-
-# Java / JVM
 *.class
-*.jar
-*.war
-*.nar
-hs_err_pid*
-replay_pid*
+bin/main/application.yaml
 
-# IDE
-.idea/
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+/out
+*.iws
 *.iml
 *.ipr
-*.iws
-.project
-.classpath
-.settings/
-.vscode/
 
-# OS
 .DS_Store
-Thumbs.db
 
-# Logs / temp
+applicationinsights-agent-*.jar
 *.log
-*.tmp
-*.swp
-*~
+.env
