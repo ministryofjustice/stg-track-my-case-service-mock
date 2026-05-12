@@ -118,6 +118,7 @@ jobs:
           NEW_TAG_V: ${{ needs.build-push-test.outputs.new_tag }}
           RELEASE_NAME: ${{ github.event.repository.name }}-test
           VARS_CONTEXT:  ${{ toJson(vars) }}
+          APP_PORT: ${{ vars.TMC_APP_PORT }}
         run: |
 
           combined_json=$VARS_CONTEXT
@@ -179,6 +180,7 @@ jobs:
           --set WebApp.Image.Repository=$ECR_REPO_WEBAPP \
           --set WebApp.Image.Tag=$NEW_TAG_V \
           --set WebApp.Name=$KUBE_NAMESPACE \
+          --set WebApp.containerPort=$APP_PORT \
           --set-string WebApp.variables_hash="$variables_hash" \
           --set Ingress.ModSec.Enabled=true \
           --set securityContext.allowPrivilegeEscalation=false \
@@ -194,6 +196,7 @@ jobs:
           --set WebApp.Image.Repository=$ECR_REPO_WEBAPP \
           --set WebApp.Image.Tag=$NEW_TAG_V \
           --set WebApp.Name=$KUBE_NAMESPACE \
+          --set WebApp.containerPort=$APP_PORT \
           --set-string WebApp.variables_hash="$variables_hash" \
           --set Ingress.ModSec.Enabled=true \
           --set securityContext.allowPrivilegeEscalation=false \
