@@ -27,7 +27,7 @@ class CourtScheduleControllerTest {
         };
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new CourtScheduleController(courtScheduleService)).build();
 
-        mockMvc.perform(get("/case/URN123/courtschedule"))
+        mockMvc.perform(get("/slc/case/URN123/courtschedule"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.courtSchedule").isArray())
             .andExpect(jsonPath("$.courtSchedule.length()").value(1))

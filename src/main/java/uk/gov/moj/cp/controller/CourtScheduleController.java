@@ -16,7 +16,7 @@ public class CourtScheduleController {
         this.courtScheduleService = courtScheduleService;
     }
 
-    @GetMapping("/case/{caseUrn}/courtschedule")
+    @GetMapping("/slc/case/{caseUrn}/courtschedule")
     public ResponseEntity<CourtScheduleSchema>  courtSchedule(@PathVariable String caseUrn) {
         return ResponseEntity.ok(new CourtScheduleSchema(courtScheduleService.courtScheduleForCase(caseUrn)));
     }

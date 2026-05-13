@@ -16,7 +16,7 @@ public class CourtHouseController {
         this.courtHouseService = courtHouseService;
     }
 
-    @GetMapping("/courthouses/{courthouseId}/courtrooms/{courtroomId}")
+    @GetMapping("/rcc/courthouses/{courthouseId}/courtrooms/{courtroomId}")
     @SuppressWarnings("unused")
     public ResponseEntity<CourtHouse> courthouseAndCourtroom(
             @PathVariable String courthouseId,
@@ -25,7 +25,7 @@ public class CourtHouseController {
         return ResponseEntity.ok(courtHouseService.courthouse(courthouseId, courtroomId));
     }
 
-    @GetMapping("/courthouses/{courthouseId}")
+    @GetMapping("/rcc/courthouses/{courthouseId}")
     @SuppressWarnings("unused")
     public ResponseEntity<CourtHouse> courthouse(@PathVariable String courthouseId) {
         return ResponseEntity.ok(courtHouseService.courthouse(courthouseId));
