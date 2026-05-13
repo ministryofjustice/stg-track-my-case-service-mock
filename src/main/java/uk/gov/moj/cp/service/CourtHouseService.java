@@ -1,16 +1,45 @@
 package uk.gov.moj.cp.service;
 
-import org.springframework.http.ResponseEntity;
+import com.moj.generated.hmcts.Address;
+import com.moj.generated.hmcts.CourtHouse;
+import com.moj.generated.hmcts.CourtRoom;
 import org.springframework.stereotype.Service;
 
-import static uk.gov.moj.cp.util.Utils.getResponse;
+import java.util.List;
 
 @Service
 public class CourtHouseService {
 
-    private static final String COURTHOUSE_MOCK = "courthouse.json";
+    private static final int DEFAULT_COURT_ROOM_ID = 2975;
 
-    public ResponseEntity<String> courthouse() {
-        return getResponse(COURTHOUSE_MOCK);
+    public CourtHouse courthouse(final String courthouseId, final String courtroomId) {
+        return getCourtHouse(courthouseId, courtroomId);
+    }
+
+    public CourtHouse courthouse(final String courthouseId) {
+        return getCourtHouse(courthouseId, null);
+    }
+
+    private CourtHouse getCourtHouse(final String courthouseId, final String courtroomId) {
+        int courtRoomId = DEFAULT_COURT_ROOM_ID;
+        if (courtroomId != null && !courtroomId.isBlank()) {
+            courtRoomId = Integer.parseInt(courtroomId);
+        }
+        Address address = new Address(
+                "181 Marylebone Road",
+                "London",
+                null,
+                null,
+                "NW1 5BR",
+                "UK"
+        );
+        CourtRoom courtRoom = new CourtRoom(courtRoomId, "Courtroom 01");
+        return new CourtHouse(
+                CourtHouse.CourtHouseType.MAGISTRATE,
+                courthouseId,
+                "Westminster Magistrates' Court",
+                address,
+                List.of(courtRoom)
+        );
     }
 }

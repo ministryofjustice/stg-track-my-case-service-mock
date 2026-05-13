@@ -1,45 +1,38 @@
 package uk.gov.moj.cp.controller;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.moj.cp.service.CourtHouseService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class CourtHouseControllerTest {
 
     @Test
-    void courthouseReturnsServiceBody() throws Exception {
-        CourtHouseService courtHouseService = new CourtHouseService() {
-            @Override
-            public ResponseEntity<String> courthouse() {
-                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("{\"courtHouseCode\":\"X\"}");
-            }
-        };
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new CourtHouseController(courtHouseService)).build();
+    void courthouseReturnsCourtHouseJson() throws Exception {
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(
+                new CourtHouseController(new CourtHouseService())
+        ).build();
 
-        mockMvc.perform(get("/courthouses/B01IX00"))
+        mockMvc.perform(get("/rcc/courthouses/B01IX00"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"courtHouseCode\":\"X\"}"));
+                .andExpect(jsonPath("$.courtHouseCode").value("B01IX00"))
+                .andExpect(jsonPath("$.courtHouseName").value("Westminster Magistrates' Court"))
+                .andExpect(jsonPath("$.courtRoom[0].courtRoomId").value(2975));
     }
 
     @Test
-    void courthouseAndCourtroomReturnsServiceBody() throws Exception {
-        CourtHouseService courtHouseService = new CourtHouseService() {
-            @Override
-            public ResponseEntity<String> courthouse() {
-                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("{\"courtHouseCode\":\"Y\"}");
-            }
-        };
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new CourtHouseController(courtHouseService)).build();
+    void courthouseAndCourtroomReturnsCourtHouseJson() throws Exception {
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(
+                new CourtHouseController(new CourtHouseService())
+        ).build();
 
-        mockMvc.perform(get("/courthouses/B01IX00/courtrooms/2975"))
+        mockMvc.perform(get("/rcc/courthouses/B01IX00/courtrooms/42"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"courtHouseCode\":\"Y\"}"));
+                .andExpect(jsonPath("$.courtHouseCode").value("B01IX00"))
+                .andExpect(jsonPath("$.courtRoom[0].courtRoomId").value(42));
     }
 }

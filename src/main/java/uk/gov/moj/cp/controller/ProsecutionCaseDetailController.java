@@ -1,5 +1,6 @@
 package uk.gov.moj.cp.controller;
 
+import com.moj.generated.hmcts.ProsecutionCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,7 @@ public class ProsecutionCaseDetailController {
 
     @GetMapping("/pcd/cases/{caseUrn}")
     @SuppressWarnings("unused")
-    public ResponseEntity<String> pcdCase(@PathVariable String caseUrn) {
-        return prosecutionCaseDetailService.caseDetail();
+    public ResponseEntity<ProsecutionCase> pcdCase(@PathVariable String caseUrn) {
+        return ResponseEntity.ok(prosecutionCaseDetailService.caseDetail(caseUrn));
     }
 }
