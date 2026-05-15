@@ -21,10 +21,10 @@ public class CourtHouseService {
     }
 
     private CourtHouse getCourtHouse(final String courthouseId, final String courtroomId) {
-        int courtRoomId = DEFAULT_COURT_ROOM_ID;
+        /*int courtRoomId = DEFAULT_COURT_ROOM_ID;
         if (courtroomId != null && !courtroomId.isBlank()) {
             courtRoomId = Integer.parseInt(courtroomId);
-        }
+        }*/
         Address address = new Address(
                 "181 Marylebone Road",
                 "London",
@@ -33,7 +33,7 @@ public class CourtHouseService {
                 "NW1 5BR",
                 "UK"
         );
-        CourtRoom courtRoom = new CourtRoom(courtRoomId, "Courtroom 01");
+        CourtRoom courtRoom = new CourtRoom(DEFAULT_COURT_ROOM_ID, "Courtroom 01");
         return new CourtHouse(
                 CourtHouse.CourtHouseType.MAGISTRATE,
                 courthouseId,
