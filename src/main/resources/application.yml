@@ -1,0 +1,14 @@
+server:
+  port: ${SERVER_PORT:8089}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+
+services:
+  # Mock response delay per controller (milliseconds)
+  prosecutionCaseDetailController: ${TMC_PCD_CONTROLLER_DELAY:10000}
+  courtHouseController: ${TMC_COURT_HOUSE_CONTROLLER_DELAY:10000}
+  courtScheduleController: ${TMC_COURT_SCHEDULE_CONTROLLER_DELAY:10000}

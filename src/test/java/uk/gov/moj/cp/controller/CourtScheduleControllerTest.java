@@ -25,7 +25,7 @@ class CourtScheduleControllerTest {
                 return super.courtScheduleForCase(caseUrn);
             }
         };
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new CourtScheduleController(courtScheduleService)).build();
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new CourtScheduleController(courtScheduleService, 0)).build();
 
         mockMvc.perform(get("/slc/case/URN123/courtschedule"))
             .andExpect(status().isOk())

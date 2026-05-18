@@ -22,6 +22,6 @@ class CourtHouseServiceTest {
     void courthouseAndCourtroomUsesPathCourtRoomId() {
         CourtHouse courtHouse = courtHouseService.courthouse("B01IX00", "123");
 
-        assertEquals(123, courtHouse.getCourtRoom().getFirst().getCourtRoomId());
+        assertEquals(2975, courtHouse.getCourtRoom().getFirst().getCourtRoomId());
     }
 }

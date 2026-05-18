@@ -14,7 +14,7 @@ class CourtHouseControllerTest {
     @Test
     void courthouseReturnsCourtHouseJson() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(
-                new CourtHouseController(new CourtHouseService())
+                new CourtHouseController(new CourtHouseService(), 0)
         ).build();
 
         mockMvc.perform(get("/rcc/courthouses/B01IX00"))
@@ -27,7 +27,7 @@ class CourtHouseControllerTest {
     @Test
     void courthouseAndCourtroomReturnsCourtHouseJson() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(
-                new CourtHouseController(new CourtHouseService())
+                new CourtHouseController(new CourtHouseService(), 0)
         ).build();
 
         mockMvc.perform(get("/rcc/courthouses/B01IX00/courtrooms/42"))
