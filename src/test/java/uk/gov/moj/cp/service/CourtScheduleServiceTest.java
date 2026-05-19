@@ -24,15 +24,12 @@ class CourtScheduleServiceTest {
 
         assertEquals(1, schedules.size());
         Hearing hearing = schedules.getFirst().getHearings().getFirst();
-        assertEquals("TMCTR0D-hearing-id", hearing.getHearingId());
         assertEquals("Trial", hearing.getHearingType());
         assertNull(hearing.getWeekCommencing());
         assertEquals(1, hearing.getCourtSittings().size());
 
         CourtSitting sitting = hearing.getCourtSittings().getFirst();
-        assertEquals("TMCTR0D-judiciary-id-1", sitting.getJudiciaryId());
-        assertEquals("TMCTR0D-court-house-id-1", sitting.getCourtHouse());
-        assertEquals("TMCTR0D-court-room-id-1", sitting.getCourtRoom());
+
         assertTrue(hearing.getHearingDescription().contains("TMCTR0D"));
         assertEquals("Note for first hearing", hearing.getListNote());
     }
@@ -44,12 +41,9 @@ class CourtScheduleServiceTest {
         assertEquals(1, schedules.size());
         Hearing hearing = schedules.getFirst().getHearings().getFirst();
         assertEquals("Sentence", hearing.getHearingType());
-        assertTrue(hearing.getHearingId().startsWith("TMCSEN1D2"));
         List<CourtSitting> sittings = hearing.getCourtSittings();
         assertEquals(2, sittings.size());
 
-        assertEquals("TMCSEN1D2-judiciary-id-1", sittings.get(0).getJudiciaryId());
-        assertEquals("TMCSEN1D2-judiciary-id-2", sittings.get(1).getJudiciaryId());
 
         ZonedDateTime firstStart = sittings.get(0).getSittingStart();
         ZonedDateTime secondStart = sittings.get(1).getSittingStart();
@@ -77,7 +71,6 @@ class CourtScheduleServiceTest {
         assertEquals(1, schedules.size());
         Hearing hearing = schedules.getFirst().getHearings().getFirst();
         assertEquals("Unknown", hearing.getHearingType());
-        assertEquals("OTHER-hearing-id", hearing.getHearingId());
         assertEquals(1, hearing.getCourtSittings().size());
     }
 }

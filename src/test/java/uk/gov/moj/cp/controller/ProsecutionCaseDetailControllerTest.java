@@ -14,7 +14,7 @@ class ProsecutionCaseDetailControllerTest {
     @Test
     void pcdCaseReturnsServiceBody() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(
-                new ProsecutionCaseDetailController(new ProsecutionCaseDetailService())
+                new ProsecutionCaseDetailController(new ProsecutionCaseDetailService(), 0)
         ).build();
 
         mockMvc.perform(get("/pcd/cases/2NXABC12"))
