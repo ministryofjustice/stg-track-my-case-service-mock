@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CourtHouseControllerTest {
 
+    private final int DEFAULT_COURT_ROOM_ID = 2975;
+
     @Test
     void courthouseReturnsCourtHouseJson() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(
@@ -21,7 +23,7 @@ class CourtHouseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.courtHouseCode").value("B01IX00"))
                 .andExpect(jsonPath("$.courtHouseName").value("Westminster Magistrates' Court"))
-                .andExpect(jsonPath("$.courtRoom[0].courtRoomId").value(2975));
+                .andExpect(jsonPath("$.courtRoom[0].courtRoomId").value(DEFAULT_COURT_ROOM_ID));
     }
 
     @Test
@@ -33,6 +35,6 @@ class CourtHouseControllerTest {
         mockMvc.perform(get("/rcc/courthouses/B01IX00/courtrooms/42"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.courtHouseCode").value("B01IX00"))
-                .andExpect(jsonPath("$.courtRoom[0].courtRoomId").value(42));
+                .andExpect(jsonPath("$.courtRoom[0].courtRoomId").value(DEFAULT_COURT_ROOM_ID));
     }
 }

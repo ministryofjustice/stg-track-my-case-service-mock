@@ -18,7 +18,7 @@ public class CourtScheduleController {
 
     public CourtScheduleController(
             CourtScheduleService courtScheduleService,
-            @Value("${services.courtScheduleController:0}") int responseDelayMillis
+            @Value("${services.rcc_latency_millisecond:0}") int responseDelayMillis
     ) {
         this.courtScheduleService = courtScheduleService;
         this.responseDelayMillis = responseDelayMillis;

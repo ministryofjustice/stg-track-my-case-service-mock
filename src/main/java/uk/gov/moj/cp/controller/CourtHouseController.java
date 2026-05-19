@@ -18,7 +18,7 @@ public class CourtHouseController {
 
     public CourtHouseController(
             CourtHouseService courtHouseService,
-            @Value("${services.courtHouseController:0}") int responseDelayMillis
+            @Value("${services.slc_latency_millisecond:0}") int responseDelayMillis
     ) {
         this.courtHouseService = courtHouseService;
         this.responseDelayMillis = responseDelayMillis;

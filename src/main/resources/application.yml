@@ -9,6 +9,6 @@ management:
 
 services:
   # Mock response delay per controller (milliseconds)
-  prosecutionCaseDetailController: ${TMC_PCD_CONTROLLER_DELAY:10000}
-  courtHouseController: ${TMC_COURT_HOUSE_CONTROLLER_DELAY:10000}
-  courtScheduleController: ${TMC_COURT_SCHEDULE_CONTROLLER_DELAY:10000}
+  pcd_latency_millisecond: ${TMC_PCD_CONTROLLER_DELAY:10000}
+  slc_latency_millisecond: ${TMC_COURT_HOUSE_CONTROLLER_DELAY:10000}
+  rcc_latency_millisecond: ${TMC_COURT_SCHEDULE_CONTROLLER_DELAY:10000}

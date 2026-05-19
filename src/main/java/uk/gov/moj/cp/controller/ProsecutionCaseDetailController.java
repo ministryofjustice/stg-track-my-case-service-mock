@@ -18,7 +18,7 @@ public class ProsecutionCaseDetailController {
 
     public ProsecutionCaseDetailController(
             ProsecutionCaseDetailService prosecutionCaseDetailService,
-            @Value("${services.prosecutionCaseDetailController:0}") int responseDelayMillis
+            @Value("${services.pcd_latency_millisecond:0}") int responseDelayMillis
     ) {
         this.prosecutionCaseDetailService = prosecutionCaseDetailService;
         this.responseDelayMillis = responseDelayMillis;

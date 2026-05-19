@@ -1,4 +1,4 @@
 services:
-  prosecutionCaseDetailController: 0
-  courtHouseController: 0
-  courtScheduleController: 0
+  pcd_latency_millisecond: 0
+  slc_latency_millisecond: 0
+  rcc_latency_millisecond: 0

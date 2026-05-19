@@ -8,14 +8,13 @@ import uk.gov.moj.cp.courtschedule.CourtScheduleUrnParser;
 import uk.gov.moj.cp.dto.DataSummary;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.UUID.randomUUID;
+
 @Service
 public class CourtScheduleService {
-
-    private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     public List<CourtSchedule> courtScheduleForCase(final String caseUrn) {
         DataSummary summary = CourtScheduleUrnParser.parseCaseUrn(caseUrn);
@@ -40,9 +39,9 @@ public class CourtScheduleService {
             ZonedDateTime sittingStart = futureDate;
             ZonedDateTime sittingEnd = futureDate.plusHours(1);
 
-            final String judiciaryId = caseUrn + "-judiciary-id-" + (i + 1);
-            final String courtHouseId = caseUrn + "-court-house-id-" + (i + 1);
-            final String courtRoomId = caseUrn + "-court-room-id-" + (i + 1);
+            final String judiciaryId = randomUUID().toString();
+            final String courtHouseId = randomUUID().toString();
+            final String courtRoomId = randomUUID().toString();
 
             final CourtSitting courtSitting = new CourtSitting(
                     sittingStart,
@@ -57,7 +56,7 @@ public class CourtScheduleService {
         }
 
         final String hearingType = mockDataSummary.getHearingType().getValue();
-        final String hearingId = caseUrn + "-hearing-id";
+        final String hearingId = randomUUID().toString();
         final Hearing hearing = new Hearing(
                 hearingId,
                 hearingType,
