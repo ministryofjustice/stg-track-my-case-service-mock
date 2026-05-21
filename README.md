@@ -26,7 +26,14 @@ docker-compose up -d --build
 
 Creates the network `stg-track-my-case-mock` on first run (`MOCK_HOST_PORT` / `SERVER_PORT` behave like the main service’s host vs container port split).
 
-If `./gradlew` inside `docker build` cannot reach `services.gradle.org`, fix Docker DNS/network or try `docker build --network=host .` on Linux (same class of issue as the main service).
+Build the JAR on the host before the image (Docker often cannot reach `services.gradle.org` / Maven from inside the build):
+
+```bash
+./gradlew bootJar
+docker-compose build
+```
+
+`./deploy.sh` runs both steps. If Gradle fails only inside Docker, fix Docker Desktop DNS under **Settings → Network** (e.g. use your host resolver).
 
 ## With stg-track-my-case-service
 

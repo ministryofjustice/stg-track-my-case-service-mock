@@ -9,6 +9,10 @@ if [ "$(docker ps -q -f name=${SERVICE_NAME})" ]; then
     docker-compose down
 fi
 
+# Build the application JAR on the host (Docker build does not run Gradle)
+echo "Building application JAR..."
+./gradlew bootJar -Dorg.gradle.daemon=false
+
 # Rebuild the Docker image
 echo "Rebuilding the Docker image..."
 docker-compose build

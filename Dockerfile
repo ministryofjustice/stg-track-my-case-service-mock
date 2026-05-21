@@ -1,17 +1,5 @@
-# Use Amazon Corretto for building the application
-FROM amazoncorretto:25-alpine AS builder
-
-# Set the working directory
-WORKDIR /app
-
-# Copy all files to the working directory
-COPY . .
-
-
-# Build the application using Gradle
-RUN ./gradlew assemble -Dorg.gradle.daemon=false
-
-# Use Eclipse Temurin JRE for running the application
+# Build the JAR on the host first (Docker networking often cannot reach Gradle/Maven):
+#   ./gradlew bootJar
 FROM eclipse-temurin:25-jre-jammy
 
 # Set the maintainer label
@@ -29,18 +17,10 @@ RUN addgroup --gid 2000 --system appgroup && \
 # Set the working directory
 WORKDIR /app
 
-# Copy the built application JAR from the builder stage
-COPY --from=builder --chown=appuser:appgroup /app/build/libs/stg-track-my-case-service-mock*.jar /app/app.jar
+COPY --chown=appuser:appgroup build/libs/stg-track-my-case-service-mock.jar /app/app.jar
 
-# Copy the Java agent (if required)
-#COPY --chown=appuser:appgroup agent.jar /app/agent.jar
-
-# Set the user to the created system user
 USER 2000
 
-# Define the entry point for the container
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
-
-# Expose the application port (see SERVER_PORT / application.properties; default 8089)
 EXPOSE 8089

@@ -29,7 +29,7 @@ services:
     # Right side must be the port the JVM listens on inside the container (see SERVER_PORT in .env), not MOCK_HOST_PORT.
     ports:
       - "${MOCK_HOST_PORT:-8089}:${SERVER_PORT}"
-      - "5005:5005"
+      - "5006:5006"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8089/health"]
       interval: 30s
