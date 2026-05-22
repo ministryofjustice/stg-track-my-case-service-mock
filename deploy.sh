@@ -9,9 +9,13 @@ if [ "$(docker ps -q -f name=${SERVICE_NAME})" ]; then
     docker-compose down
 fi
 
-# Build the application JAR on the host (Docker build does not run Gradle)
-echo "Building application JAR..."
-./gradlew bootJar -Dorg.gradle.daemon=false
+echo "Building application JAR for Docker..."
+./gradlew prepareDocker -Dorg.gradle.daemon=false
+
+if [ ! -f docker/stg-track-my-case-service-mock.jar ]; then
+    echo "ERROR: docker/stg-track-my-case-service-mock.jar was not created. Run: ./gradlew prepareDocker"
+    exit 1
+fi
 
 # Rebuild the Docker image
 echo "Rebuilding the Docker image..."

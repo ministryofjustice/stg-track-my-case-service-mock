@@ -18,22 +18,16 @@ Copy `.env.example` to `.env`, then either:
 ./deploy.sh
 ```
 
-or:
+or (build the JAR on the host, then Docker):
 
 ```bash
+./gradlew prepareDocker
 docker-compose up -d --build
 ```
 
 Creates the network `stg-track-my-case-mock` on first run (`MOCK_HOST_PORT` / `SERVER_PORT` behave like the main service’s host vs container port split).
 
-Build the JAR on the host before the image (Docker often cannot reach `services.gradle.org` / Maven from inside the build):
-
-```bash
-./gradlew bootJar
-docker-compose build
-```
-
-`./deploy.sh` runs both steps. If Gradle fails only inside Docker, fix Docker Desktop DNS under **Settings → Network** (e.g. use your host resolver).
+**Important:** `docker-compose build` does not run Gradle. You must run `./gradlew prepareDocker` first (creates `docker/stg-track-my-case-service-mock.jar`). `./deploy.sh` runs both steps. If you only run `docker-compose build`, you will see `docker/stg-track-my-case-service-mock.jar: not found`.
 
 ## With stg-track-my-case-service
 
