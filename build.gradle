@@ -99,6 +99,14 @@ bootJar {
   }
 }
 
+// Copies the boot JAR for Docker (avoids relying on .dockerignore exceptions for build/).
+tasks.register('prepareDocker', Copy) {
+  dependsOn bootJar
+  from bootJar.archiveFile
+  into layout.projectDirectory.dir('docker')
+  rename { 'stg-track-my-case-service-mock.jar' }
+}
+
 jsonSchema2Pojo {
   source = files("src/main/resources/schema") // <-- path to your JSON Schema files
   targetPackage = 'com.moj.generated'     // <-- your desired package name
