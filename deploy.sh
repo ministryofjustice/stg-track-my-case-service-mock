@@ -10,10 +10,13 @@ if [ "$(docker ps -q -f name=${SERVICE_NAME})" ]; then
 fi
 
 echo "Building application JAR for Docker..."
-./gradlew prepareDocker -Dorg.gradle.daemon=false
+./gradlew bootJar -Dorg.gradle.daemon=false || {
+    echo "ERROR: Gradle build failed."
+    exit 1
+}
 
-if [ ! -f docker/stg-track-my-case-service-mock.jar ]; then
-    echo "ERROR: docker/stg-track-my-case-service-mock.jar was not created. Run: ./gradlew prepareDocker"
+if [ ! -f build/libs/stg-track-my-case-service-mock.jar ]; then
+    echo "ERROR: build/libs/stg-track-my-case-service.jar was not created. Run: ./gradlew bootJar"
     exit 1
 fi
 
