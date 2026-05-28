@@ -37,6 +37,7 @@ jobs:
       - name: Set Version tag output
         id: set-version-tag-output
         run: echo "new_tag=${{ steps.bump-id.outputs.new_tag }}" >> $GITHUB_OUTPUT
+
       - name: Build
         env:
           NEW_TAG_V: ${{ steps.set-version-tag-output.outputs.new_tag }}
