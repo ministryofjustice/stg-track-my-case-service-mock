@@ -4,12 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        http_proxy: ${http_proxy}
-        https_proxy: ${https_proxy}
-        no_proxy: ${no_proxy}
-        BASE_IMAGE: ${BASE_IMAGE}
         SERVER_PORT: ${SERVER_PORT}
-        JAR_FILE_PATH: ${JAR_FILE_PATH}
     env_file:
       - .env
     environment:
@@ -28,8 +23,8 @@ services:
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     # Right side must be the port the JVM listens on inside the container (see SERVER_PORT in .env), not MOCK_HOST_PORT.
     ports:
-      - "${MOCK_HOST_PORT:-8089}:${SERVER_PORT}"
-      - "5006:5006"
+      - "${SERVER_PORT:-8089}:${SERVER_PORT}"
+      - "5006:5005"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8089/health"]
       interval: 30s
