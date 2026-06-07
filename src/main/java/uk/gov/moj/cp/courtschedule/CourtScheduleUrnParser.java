@@ -8,45 +8,38 @@ import java.util.regex.Pattern;
 
 public final class CourtScheduleUrnParser {
 
-    private static final String MOCK_DATA_URN_PREFIX_TMC = "TMC";
-
     private CourtScheduleUrnParser() {
     }
 
     public static DataSummary parseCaseUrn(final String caseUrn) {
-        //    TMCTR99M99D / TMCTR99D / TMCTR99M / TMCTRN9D / TMCTRN1D5
-        //    TMCSE99M99D / TMCSE99D / TMCSE99M / TMCSEN9M / TMCSEN1D3
-        //    TMC - is custom test prefix
-        //    TR or SE - Trial or Sentence type of hearing
-        //    99M - maximum 2 digits number of months (optional)
-        //    99D - maximum 2 digits number of days (optional)
-        //    N1 - negative 1 day, N9 - negative 9 days
-        //    2-999 number at the end - multi day hearing (totalHearings, 1–3 digits)
+        //  URN = <hearing-type-prefix> + <body>
         //
-        //    TMCTR0D - today single trial hearing
-        //    TMCTRN / TMCTRN1 / TMCTRN1D / TMCTRN1D1 - same: N defaults to N1; start offset -1d, default 1 day / 1 sitting
-        //    TMCTRN1D0 - N1D offset, 0 court sittings (still -1d for generateData anchor)
-        //    TMCTRN1D2 - 1 day before, multi day hearing (2 days)
-        //    TMCTRN1M1D / TMCTRN1M1D2 - compact N#M#D: −months and −day counts (N1M1D → -1M -1D); trailing digit = sittings
-        //    TMCTRMD / TMCSEMD - bare MD (no digits) = 1 month, 1 day, 1 hearing
-        //    TMCSEN2D5 - sentencing hearing started 2 days before and has multi day hearing (for 5 days)
+        //  Hearing-type prefixes (longest match wins — see HearingType enum for full list):
+        //    Trial:    T, TNW, TB, TF, TFW, TPH, TOPI, TP, TPW, TR, TL, TFTW
+        //    Sentence: S, SAAC, SOTA, SPTA, SPOA, SPR, CFS, CSPH, DS, DSRR, DSPR
         //
-        //    TMCTRV1 /  TMCTRV21 - trial hearing with custom data, id=1 / id=21 (future feature, like multi hearing)
+        //  Body:
+        //    99M - up to 2 digits, months offset (optional)
+        //    99D - up to 2 digits, days offset (optional)
+        //    N1  - negative 1 day; N9 - negative 9 days
+        //    2-999 trailing digits - number of court sittings
+        //
+        //  Examples:
+        //    T0D        - today, single trial hearing
+        //    TN / TN1 / TN1D / TN1D1 - same: start offset -1d, 1 sitting
+        //    TN1D0      - 1 day before, 0 court sittings
+        //    TN1D2      - 1 day before, 2-day (multi-sitting) hearing
+        //    TN1M1D / TN1M1D2 - compact N#M#D: −months and −days; trailing digit = sittings
+        //    TMD / SMD  - bare MD (no digits) = 1 month, 1 day, 1 hearing
+        //    SN2D5      - sentence started 2 days before, 5 sittings
+        //    TR         - Trial (Reserve), default date/sittings
+        //    CFS99M     - Committal for Sentence, 99 months out
 
-        if (caseUrn == null || caseUrn.length() < 5 || !caseUrn.toUpperCase().startsWith(MOCK_DATA_URN_PREFIX_TMC)) {
+        HearingType hearingType = HearingType.fromUrn(caseUrn);
+        if (hearingType == HearingType.UNKNOWN) {
             return defaultSummary();
         }
-        String rest = caseUrn.substring(MOCK_DATA_URN_PREFIX_TMC.length());
-        HearingType hearingType = rest.startsWith(HearingType.TRIAL.getValue().substring(
-                0,
-                2
-        ).toUpperCase()) ? HearingType.TRIAL
-                : rest.startsWith(HearingType.SENTENCE.getValue().substring(0, 2).toUpperCase()) ? HearingType.SENTENCE
-                : null;
-        if (hearingType == null) {
-            return defaultSummary();
-        }
-        String body = rest.substring(2);
+        String body = caseUrn.toUpperCase().substring(hearingType.getPrefix().length());
         int totalHearings = 1;
         if (!body.isEmpty()) {
             int i = body.length();
@@ -83,11 +76,11 @@ public final class CourtScheduleUrnParser {
         Pattern compactNegativeMnD = Pattern.compile("^N(\\d{1,5})M(\\d{1,5})D$");
         Matcher compactMatcher = compactNegativeMnD.matcher(body);
         if (compactMatcher.matches()) {
-            // TMCTRN1M1D — N1M1D as -1 month and -1 day, not (N1M) + (1D)
+            // TN1M1D — N1M1D as -1 month and -1 day, not (N1M) + (1D)
             months = -Integer.parseInt(compactMatcher.group(1), 10);
             days = -Integer.parseInt(compactMatcher.group(2), 10);
         } else if ("MD".equals(body)) {
-            // TMCTRMD / TMCSEMD — M and D with no numbers default to 1
+            // TMD / SMD — M and D with no numbers default to 1
             months = 1;
             days = 1;
         } else {
@@ -97,10 +90,10 @@ public final class CourtScheduleUrnParser {
                 months = parseSignedUnit(matcher.group(1));
                 days = parseSignedUnit(matcher.group(2));
             } else if ("N".equals(body)) {
-                // TMCTRN / TMCSEN — bare N defaults to N1 (one calendar day back)
+                // TN / SN — bare N defaults to N1 (one calendar day back)
                 days = -1;
             } else if (body.matches("N\\d{1,5}")) {
-                // TMCTRN1 — N1 = same as N1D (started one calendar day back), default 1 day/sitting
+                // TN1 — N1 = same as N1D (started one calendar day back), default 1 sitting
                 days = -1 * Integer.parseInt(body.substring(1), 10);
             }
         }
