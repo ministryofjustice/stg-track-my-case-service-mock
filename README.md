@@ -46,33 +46,34 @@ From `stg-track-my-case-service`, `docker compose up` expects this mock to be ru
 The `case_urn` is the hearing-type prefix followed by an optional date/sitting body.
 Longest prefix wins (e.g. `TFTW` is matched before `TF` or `T`).
 
-| Prefix | Hearing type |
-|--------|--------------|
-| `T`    | Trial |
-| `TNW`  | Trial - no witnesses |
-| `TB`   | Trial (Backer) |
-| `TF`   | Trial (Floater) |
-| `TFW`  | Trial (First Warning) |
-| `TPH`  | Trial (Part Heard) |
-| `TOPI` | Trial of Preliminary Issue |
-| `TP`   | Trial (Priority) |
-| `TPW`  | Trial (Previously Warned) |
-| `TR`   | Trial (Reserve) |
-| `TL`   | Trial Linked |
-| `TFTW` | Trial (Fixed for this Week) |
-| `S`    | Sentence |
-| `SAAC` | Sentence (at another Court) |
-| `SOTA` | Sentence (Officer to Attend) |
-| `SPTA` | Sentence (Prosecution to Attend) |
+| Prefix | Hearing type                                 |
+| ------ | -------------------------------------------- |
+| `T`    | Trial                                        |
+| `TNW`  | Trial - no witnesses                         |
+| `TB`   | Trial (Backer)                               |
+| `TF`   | Trial (Floater)                              |
+| `TFW`  | Trial (First Warning)                        |
+| `TPH`  | Trial (Part Heard)                           |
+| `TOPI` | Trial of Preliminary Issue                   |
+| `TP`   | Trial (Priority)                             |
+| `TPW`  | Trial (Previously Warned)                    |
+| `TR`   | Trial (Reserve)                              |
+| `TL`   | Trial Linked                                 |
+| `TFTW` | Trial (Fixed for this Week)                  |
+| `S`    | Sentence                                     |
+| `SAAC` | Sentence (at another Court)                  |
+| `SOTA` | Sentence (Officer to Attend)                 |
+| `SPTA` | Sentence (Prosecution to Attend)             |
 | `SPOA` | Sentence (Prosecution and Officer to Attend) |
-| `SPR`  | Sentence (Prosecution Released) |
-| `CFS`  | Committal for Sentence |
-| `CSPH` | Committal for Sentence (Part Heard) |
-| `DS`   | Deferred Sentence |
-| `DSRR` | Deferred Sentence (Respondent Released) |
-| `DSPR` | Deferred Sentence - Prosecution Released |
+| `SPR`  | Sentence (Prosecution Released)              |
+| `CFS`  | Committal for Sentence                       |
+| `CSPH` | Committal for Sentence (Part Heard)          |
+| `DS`   | Deferred Sentence                            |
+| `DSRR` | Deferred Sentence (Respondent Released)      |
+| `DSPR` | Deferred Sentence - Prosecution Released     |
 
 Body (all parts optional):
+
 - `{n}M` / `N{n}M` — months offset (positive / negative)
 - `{n}D` / `N{n}D` — days offset (positive / negative)
 - Trailing digits ≥ 2 — number of court sittings
