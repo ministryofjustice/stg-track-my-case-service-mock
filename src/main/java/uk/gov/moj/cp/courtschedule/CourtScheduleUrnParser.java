@@ -35,7 +35,7 @@ public final class CourtScheduleUrnParser {
         //    TR         - Trial (Reserve), default date/sittings
         //    CFS99M     - Committal for Sentence, 99 months out
 
-        HearingType hearingType = HearingType.fromUrn(caseUrn);
+        HearingType hearingType = HearingType.getHearingTypeFromCaseUrn(caseUrn);
         if (hearingType == HearingType.UNKNOWN) {
             return defaultSummary();
         }

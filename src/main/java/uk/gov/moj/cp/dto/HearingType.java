@@ -37,7 +37,7 @@ public enum HearingType {
         this.prefix = prefix;
     }
 
-    public static HearingType fromUrn(String urn) {
+    public static HearingType getHearingTypeFromCaseUrn(String urn) {
         if (urn == null || urn.isEmpty()) {
             return UNKNOWN;
         }
