@@ -40,6 +40,20 @@ public final class CourtScheduleUrnParser {
             return defaultSummary();
         }
         String body = caseUrn.toUpperCase().substring(hearingType.getPrefix().length());
+
+        // 'H' never appears in the date-body grammar (digits, N, M, D), so MH is unambiguous
+        Integer secondHearingDayOffset = null;
+        int mhIdx = body.indexOf("MH");
+        if (mhIdx >= 0) {
+            String mhPart = body.substring(mhIdx + 2);
+            body = body.substring(0, mhIdx);
+            if (mhPart.startsWith("N")) {
+                secondHearingDayOffset = mhPart.length() > 1 ? -Integer.parseInt(mhPart.substring(1)) : -1;
+            } else {
+                secondHearingDayOffset = mhPart.isEmpty() ? 1 : Integer.parseInt(mhPart);
+            }
+        }
+
         int totalHearings = 1;
         if (!body.isEmpty()) {
             int i = body.length();
@@ -102,6 +116,7 @@ public final class CourtScheduleUrnParser {
                 .months(months)
                 .days(days)
                 .totalHearings(totalHearings)
+                .secondHearingDayOffset(secondHearingDayOffset)
                 .build();
     }
 

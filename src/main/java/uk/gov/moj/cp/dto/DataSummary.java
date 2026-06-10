@@ -10,4 +10,5 @@ public class DataSummary {
     int months;
     int days;
     int totalHearings;
+    Integer secondHearingDayOffset; // null = single hearing; positive = days after first; negative = days before first
 }

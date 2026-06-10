@@ -74,7 +74,17 @@ class CourtScheduleServiceTest {
                 of("CFSN3D",    "Committal for Sentence",      0,  -3, 1),   // 3 days back
                 of("CFS2M3D",   "Committal for Sentence",      2,   3, 1),   // 2 months and 3 days ahead
                 of("DSN1D5",    "Deferred Sentence",           0,  -1, 5),   // 1 day back, 5 sittings
-                of("TFTW99M",   "Trial (Fixed for this Week)", 99,  0, 1)    // 99 months ahead
+                of("TFTW99M",   "Trial (Fixed for this Week)", 99,  0, 1),   // 99 months ahead
+
+                // -- multiple hearings (MH) --
+                of("TMH1",      "Trial",    0,  0, 1),   // second hearing 1 day after last sitting
+                of("TMH2",      "Trial",    0,  0, 1),   // second hearing 2 days after last sitting
+                of("T0DMH1",    "Trial",    0,  0, 1),   // today, second hearing 1 day after last sitting
+                of("TN1DMH2",   "Trial",    0, -1, 1),   // 1 day back, second hearing 2 days after last sitting
+                of("TN1D3MH2",  "Trial",    0, -1, 3),   // 3 sittings, second hearing 2 days after last sitting
+                of("TMHN1",     "Trial",    0,  0, 1),   // second hearing 1 day before first hearing
+                of("T0DMHN1",   "Trial",    0,  0, 1),   // today, second hearing 1 day before first hearing
+                of("SN2DMH1",   "Sentence", 0, -2, 1)    // sentence 2 days back, second hearing 1 day after last sitting
         );
     }
 
@@ -110,6 +120,54 @@ class CourtScheduleServiceTest {
     // -------------------------------------------------------------------------
     // Focused tests for structural assertions not covered by the parameterised test
     // -------------------------------------------------------------------------
+
+    @Test
+    void mhUrn_secondHearingStartsAfterLastSitting() {
+        // T0D = 1 sitting today; MH1 = second hearing 1 day after the last (only) sitting
+        List<CourtSchedule> schedules = courtScheduleService.courtScheduleForCase("T0DMH1");
+
+        assertEquals(1, schedules.size());
+        List<Hearing> hearings = schedules.getFirst().getHearings();
+        assertEquals(2, hearings.size());
+
+        ZonedDateTime lastSittingStart = hearings.get(0).getCourtSittings().getLast().getSittingStart();
+        ZonedDateTime secondStart      = hearings.get(1).getCourtSittings().getFirst().getSittingStart();
+        assertNotNull(lastSittingStart);
+        assertNotNull(secondStart);
+        assertEquals(Duration.ofDays(1), Duration.between(lastSittingStart, secondStart),
+                "second hearing should start 1 day after the last sitting");
+        assertEquals("Note for first hearing",  hearings.get(0).getListNote());
+        assertEquals("Note for second hearing", hearings.get(1).getListNote());
+    }
+
+    @Test
+    void mhUrn_multiSitting_secondHearingStartsAfterLastSitting() {
+        // TN1D3 = 3 sittings starting 1 day back; MH2 = second hearing 2 days after the last sitting
+        List<CourtSchedule> schedules = courtScheduleService.courtScheduleForCase("TN1D3MH2");
+
+        List<Hearing> hearings = schedules.getFirst().getHearings();
+        assertEquals(2, hearings.size());
+        assertEquals(3, hearings.get(0).getCourtSittings().size());
+
+        ZonedDateTime lastSittingStart = hearings.get(0).getCourtSittings().getLast().getSittingStart();
+        ZonedDateTime secondStart      = hearings.get(1).getCourtSittings().getFirst().getSittingStart();
+        assertEquals(Duration.ofDays(2), Duration.between(lastSittingStart, secondStart),
+                "second hearing should start 2 days after the last sitting");
+    }
+
+    @Test
+    void mhnUrn_secondHearingStartsBeforeFirstHearing() {
+        // T0D = today; MHN1 = second hearing 1 day before first hearing start
+        List<CourtSchedule> schedules = courtScheduleService.courtScheduleForCase("T0DMHN1");
+
+        List<Hearing> hearings = schedules.getFirst().getHearings();
+        assertEquals(2, hearings.size());
+
+        ZonedDateTime firstHearingStart = hearings.get(0).getCourtSittings().getFirst().getSittingStart();
+        ZonedDateTime secondStart       = hearings.get(1).getCourtSittings().getFirst().getSittingStart();
+        assertEquals(Duration.ofDays(1), Duration.between(secondStart, firstHearingStart),
+                "second hearing should start 1 day before the first hearing");
+    }
 
     @Test
     void trialTodayUrn_sittingStructureIsCorrect() {

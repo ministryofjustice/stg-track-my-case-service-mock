@@ -24,7 +24,7 @@ public class CourtScheduleService {
     private List<CourtSchedule> generateData(final String caseUrn, DataSummary mockDataSummary) {
         List<Hearing> hearings = new ArrayList<>();
 
-        ZonedDateTime futureDate = ZonedDateTime.now()
+        ZonedDateTime firstHearingDate = ZonedDateTime.now()
                 .plusMonths(mockDataSummary.getMonths())
                 .plusDays(mockDataSummary.getDays())
                 .withHour(10)
@@ -32,41 +32,49 @@ public class CourtScheduleService {
                 .withSecond(0)
                 .withNano(0);
 
-        List<CourtSitting> courtSittings = new ArrayList<>();
+        hearings.add(buildHearing(caseUrn, mockDataSummary.getHearingType().getValue(),
+                firstHearingDate, mockDataSummary.getTotalHearings(), "Note for first hearing"));
 
-        int days = mockDataSummary.getTotalHearings();
-        for (int i = 0; i < days; i++) {
-            ZonedDateTime sittingStart = futureDate;
-            ZonedDateTime sittingEnd = futureDate.plusHours(1);
-
-            final String judiciaryId = randomUUID().toString();
-            final String courtHouseId = randomUUID().toString();
-            final String courtRoomId = randomUUID().toString();
-
-            final CourtSitting courtSitting = new CourtSitting(
-                    sittingStart,
-                    sittingEnd,
-                    judiciaryId,
-                    courtHouseId,
-                    courtRoomId
-            );
-            courtSittings.add(courtSitting);
-
-            futureDate = futureDate.plusDays(1);
+        if (mockDataSummary.getSecondHearingDayOffset() != null) {
+            int offset = mockDataSummary.getSecondHearingDayOffset();
+            ZonedDateTime secondHearingDate;
+            if (offset < 0) {
+                // Negative: count back from the start of the first hearing
+                secondHearingDate = firstHearingDate.plusDays(offset);
+            } else {
+                // Positive: count forward from the last sitting of the first hearing
+                int lastSittingIndex = Math.max(0, mockDataSummary.getTotalHearings() - 1);
+                secondHearingDate = firstHearingDate.plusDays(lastSittingIndex + offset);
+            }
+            hearings.add(buildHearing(caseUrn, mockDataSummary.getHearingType().getValue(),
+                    secondHearingDate, 1, "Note for second hearing"));
         }
 
-        final String hearingType = mockDataSummary.getHearingType().getValue();
-        final String hearingId = randomUUID().toString();
-        final Hearing hearing = new Hearing(
-                hearingId,
+        return List.of(new CourtSchedule(hearings));
+    }
+
+    private Hearing buildHearing(String caseUrn, String hearingType, ZonedDateTime startDate,
+                                 int totalSittings, String listNote) {
+        List<CourtSitting> courtSittings = new ArrayList<>();
+        ZonedDateTime sittingDate = startDate;
+        for (int i = 0; i < totalSittings; i++) {
+            courtSittings.add(new CourtSitting(
+                    sittingDate,
+                    sittingDate.plusHours(1),
+                    randomUUID().toString(),
+                    randomUUID().toString(),
+                    randomUUID().toString()
+            ));
+            sittingDate = sittingDate.plusDays(1);
+        }
+
+        return new Hearing(
+                randomUUID().toString(),
                 hearingType,
                 "Follow-up " + hearingType.toLowerCase() + " hearing description for case " + caseUrn,
-                "Note for first hearing",
+                listNote,
                 null,
                 courtSittings
         );
-
-        hearings.add(hearing);
-        return List.of(new CourtSchedule(hearings));
     }
 }
