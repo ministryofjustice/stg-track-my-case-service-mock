@@ -24,10 +24,10 @@ public class RootController {
                 There is no API at / alone — use the paths your client calls, for example:
 
                   POST /{tenant}/oauth2/v2.0/token
-                  GET  /courthouses/{courthouseId}
-                  GET  /courthouses/{courthouseId}/courtrooms/{courtroomId}
+                  GET  /rcc/courthouses/{courthouseId}
+                  GET  /rcc/courthouses/{courthouseId}/courtrooms/{courtroomId}
                   GET  /pcd/cases/{caseUrn}
-                  GET  /case/{caseUrn}/courtschedule
+                  GET  /slc/case/{caseUrn}/courtschedule
                 """;
     }
 }
