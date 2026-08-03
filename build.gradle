@@ -1,0 +1,126 @@
+plugins {
+  id "application"
+  id "java"
+  id 'org.jsonschema2pojo' version '1.2.2'
+  id 'org.springframework.boot' version '3.5.9'
+  id "io.spring.dependency-management" version "1.1.7"
+
+  id 'org.sonarqube' version '7.2.2.6593'
+
+  id 'com.diffplug.spotless' version '8.1.0'
+  id 'org.owasp.dependencycheck' version '12.2.0'
+}
+
+group = "uk.gov.moj.cp"
+version = "0.1.0"
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_25
+  targetCompatibility = JavaVersion.VERSION_25
+
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(25)
+  }
+}
+
+sourceSets {
+
+  main {
+    java {
+      srcDir "$buildDir/generated/src/main/java"
+    }
+  }
+}
+
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven {
+    url = 'https://jitpack.io'
+  }
+}
+
+ext {
+  log4JVersion = "2.24.3"
+  logbackVersion = "1.5.21"
+  lombokVersion = "1.18.42"
+  springBootVersion = "3.5.9"
+}
+
+dependencies {
+  implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web') {
+    exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-core'
+    exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-websocket'
+    exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-el'
+  }
+
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '11.0.15'
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '11.0.15'
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-el', version: '11.0.15'
+
+  implementation 'org.springframework.boot:spring-boot-starter-aop'
+  implementation 'org.springframework.boot:spring-boot-starter-json'
+
+  testImplementation(platform("org.junit:junit-bom:5.12.2"))
+  testImplementation "org.springframework.boot:spring-boot-starter-test"
+  testImplementation("org.junit.jupiter:junit-jupiter-api")
+  testImplementation("org.junit.jupiter:junit-jupiter-params")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+  // Metrics
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.16.0'
+  implementation group: 'io.prometheus', name: 'prometheus-metrics-tracer-initializer', version: '1.4.3'
+
+
+  testImplementation(platform('org.junit:junit-bom:5.12.2'))
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion, {
+    exclude group: 'junit', module: 'junit'
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+
+  compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+}
+
+application {
+  mainClass = "uk.gov.moj.cp.Application"
+  applicationName = "stg-track-my-case-service-mock"
+}
+
+bootJar {
+  archiveFileName = "stg-track-my-case-service-mock.jar"
+
+  manifest {
+    attributes('Implementation-Version': project.version.toString())
+  }
+}
+
+jsonSchema2Pojo {
+  source = files("src/main/resources/schema") // <-- path to your JSON Schema files
+  targetPackage = 'com.moj.generated'     // <-- your desired package name
+  targetDirectory = file("$buildDir/generated-sources/js2p")
+  includeGeneratedAnnotation = true
+  usePrimitives = true
+  includeConstructors = true
+  annotationStyle = "jackson2"
+  useJodaDates = false
+  dateType = "java.time.LocalDate"
+  dateTimeType = "java.time.ZonedDateTime"
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir "$buildDir/generated-sources/js2p"
+    }
+  }
+}
+
+tasks.withType(Test).configureEach {
+  useJUnitPlatform()
+}
+

@@ -1,0 +1,14 @@
+server:
+  port: ${SERVER_PORT:8089}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+
+services:
+  # Mock response delay per controller (milliseconds)
+  pcd_latency_millisecond: ${TMC_PCD_LATENCY_MILLISECOND:100}
+  slc_latency_millisecond: ${TMC_SLC_LATENCY_MILLISECOND:100}
+  rcc_latency_millisecond: ${TMC_RCC_LATENCY_MILLISECOND:100}
